@@ -43,6 +43,8 @@ stdenv.mkDerivation rec {
     libuuid
     webkitgtk
     libappindicator-gtk3
+    crypt
+    ncurses5
   ];
 
   unpackPhase = ''
