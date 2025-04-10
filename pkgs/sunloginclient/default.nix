@@ -93,7 +93,7 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     description = "Sunlogin Remote Control Client";
     homepage = "https://sunlogin.oray.com/";
-    license = licenses.unfree;
+    license = licenses.MIT;
     platforms = [ "x86_64-linux" ];
   };
 }
