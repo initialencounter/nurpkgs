@@ -5,14 +5,28 @@
 , lib
 , makeWrapper
 , xorg
-, libstdcxx5
 , glibc
 , libgcc
 , libuuid
 , webkitgtk
 , libappindicator-gtk3
 , systemd
+, ncurses5
+, libxcrypt
 }:
+
+let
+  # 创建兼容层
+  libcrypt-compat = stdenv.mkDerivation {
+    name = "libcrypt-compat";
+    buildInputs = [ libxcrypt ];
+    phases = [ "installPhase" ];
+    installPhase = ''
+      mkdir -p $out/lib
+      ln -s ${libxcrypt}/lib/libcrypt.so $out/lib/libcrypt.so.1
+    '';
+  };
+in
 
 stdenv.mkDerivation rec {
   pname = "sunloginclient-${version}";
@@ -43,8 +57,8 @@ stdenv.mkDerivation rec {
     libuuid
     webkitgtk
     libappindicator-gtk3
-    libgcrypt
     ncurses5
+    libcrypt-compat
   ];
 
   unpackPhase = ''
