@@ -38,7 +38,7 @@ stdenv.mkDerivation rec {
     xorg.libXi
     xorg.libXrender
     xorg.libXau
-    libstdcxx5
+    libstdcxx
     glibc
     libgcc
     libuuid
