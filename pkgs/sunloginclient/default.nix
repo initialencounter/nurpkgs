@@ -14,6 +14,13 @@
 , systemd
 , ncurses5
 , libxcrypt-legacy
+, nss
+, nspr
+, alsa-lib
+, libXScrnSaver
+, widevine-cdm
+, pkgs
+, unzip
 }:
 
 let
@@ -26,6 +33,26 @@ let
     installPhase = ''
       mkdir -p $out/lib
       ln -s ${libxcrypt-legacy}/lib/libcrypt.so $out/lib/libcrypt.so.1
+    '';
+  };
+
+  libwidevinecdm-compat = stdenv.mkDerivation rec {
+    pname = "widevine-cdm";
+    version = "4.10.2710.0";  # 使用最新版本号
+    
+    src = fetchurl {
+      # 从 Google Chrome 或官方源获取
+      url = "https://dl.google.com/widevine-cdm/${version}-linux-x64.zip";
+      sha256 = "sha256-wSDl0Dym61JD1MaaakNI4SEjOCSrJtuRJqU7qZcJ0VI="; # 替换为实际哈希
+    };
+
+    nativeBuildInputs = [ unzip ];
+
+    unpackPhase = "unzip $src";
+
+    installPhase = ''
+      mkdir -p $out/lib
+      cp libwidevinecdm.so $out/lib/
     '';
   };
 in
@@ -62,6 +89,13 @@ stdenv.mkDerivation rec {
     libappindicator-gtk3
     ncurses5
     libcrypt-compat
+    nss
+    nspr
+    alsa-lib
+    libXScrnSaver
+    widevine-cdm
+    pkgs.gnome2.GConf
+    libwidevinecdm-compat
   ];
 
   unpackPhase = ''
@@ -70,9 +104,8 @@ stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out/usr/local/sunlogin
-    cp -r usr/local/sunlogin/bin $out/usr/local/sunlogin/
-    cp -r usr/local/sunlogin/scripts $out/usr/local/sunlogin/
-    
+    cp -r usr/local/sunlogin $out/usr/local/
+
     # 创建必要的符号链接
     mkdir -p $out/bin
     ln -s $out/usr/local/sunlogin/bin/sunloginclient $out/bin/sunloginclient
