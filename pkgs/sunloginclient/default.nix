@@ -5,20 +5,13 @@
 , lib
 , makeWrapper
 , xorg
-, gcc
-, glibc
-, libgcc
-, libuuid
-, webkitgtk
 , libappindicator-gtk3
 , systemd
 , ncurses5
 , libxcrypt-legacy
 , nss
-, nspr
 , alsa-lib
 , libXScrnSaver
-, widevine-cdm
 , pkgs
 , unzip
 }:
@@ -58,7 +51,7 @@ let
 in
 
 stdenv.mkDerivation rec {
-  pname = "sunloginclient-${version}";
+  pname = "sunloginclient";
   version = "15.2.0.63064";
   src = fetchurl {
     url = "https://dw.oray.com/sunlogin/linux/SunloginClient_${version}_amd64.deb";
@@ -81,19 +74,12 @@ stdenv.mkDerivation rec {
     xorg.libXi
     xorg.libXrender
     xorg.libXau
-    gcc.cc.lib
-    glibc
-    libgcc
-    libuuid
-    webkitgtk
     libappindicator-gtk3
     ncurses5
     libcrypt-compat
     nss
-    nspr
     alsa-lib
     libXScrnSaver
-    widevine-cdm
     pkgs.gnome2.GConf
     libwidevinecdm-compat
   ];
@@ -103,21 +89,16 @@ stdenv.mkDerivation rec {
   '';
 
   installPhase = ''
-    mkdir -p $out/usr/local/sunlogin
-    cp -r usr/local/sunlogin $out/usr/local/
+    mkdir -p $out
+    cp -r usr/local/sunlogin/* $out/
 
-    # 创建必要的符号链接
-    mkdir -p $out/bin
-    ln -s $out/usr/local/sunlogin/bin/sunloginclient $out/bin/sunloginclient
-    ln -s $out/usr/local/sunlogin/bin/oray_rundaemon $out/bin/oray_rundaemon
-    
     # 安装 .desktop 文件
     mkdir -p $out/share/applications
     cp usr/share/applications/sunlogin.desktop $out/share/applications/
 
     # 修复 .desktop 文件中的路径
     substituteInPlace $out/share/applications/sunlogin.desktop \
-      --replace "/usr/local/sunlogin" "$out/usr/local/sunlogin"
+      --replace "/usr/local/sunlogin" "$out"
     
     # 安装图标（如果有）
     if [ -d "usr/share/icons" ]; then
@@ -134,8 +115,8 @@ stdenv.mkDerivation rec {
     
     [Service]
     Type=forking
-    ExecStart=$out/usr/local/sunlogin/scripts/start.sh
-    ExecStop=$out/usr/local/sunlogin/scripts/stop.sh
+    ExecStart=$out/scripts/start.sh
+    ExecStop=$out/scripts/stop.sh
     Restart=on-failure
     
     [Install]
@@ -143,16 +124,18 @@ stdenv.mkDerivation rec {
     EOF
   '';
 
+  autoPatchelfLibs = [ "$out/lib" ];
+  
   postFixup = ''
     # 修复脚本中的路径
-    substituteInPlace $out/usr/local/sunlogin/scripts/start.sh \
-      --replace "/usr/local/sunlogin" "$out/usr/local/sunlogin"
-    substituteInPlace $out/usr/local/sunlogin/scripts/stop.sh \
-      --replace "/usr/local/sunlogin" "$out/usr/local/sunlogin"
-    substituteInPlace $out/usr/local/sunlogin/scripts/depends.sh \
-      --replace "/usr/local/sunlogin" "$out/usr/local/sunlogin"
+    substituteInPlace $out/scripts/start.sh \
+      --replace "/usr/local/sunlogin" "$out"
+    substituteInPlace $out/scripts/stop.sh \
+      --replace "/usr/local/sunlogin" "$out"
+    substituteInPlace $out/scripts/depends.sh \
+      --replace "/usr/local/sunlogin" "$out"
     
-    chmod +x $out/usr/local/sunlogin/scripts/*.sh
+    chmod +x $out/scripts/*.sh
     # 确保 .desktop 文件可执行
     chmod +x $out/share/applications/sunlogin.desktop
   '';
