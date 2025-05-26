@@ -17,6 +17,7 @@
   example-package = pkgs.callPackage ./pkgs/example-package { };
   sunloginclient = pkgs.callPackage ./pkgs/sunloginclient { };
   easytier = pkgs.callPackage ./pkgs/easytier { };
+  easytier-gui = pkgs.callPackage ./pkgs/easytier-gui { };
   # some-qt5-package = pkgs.libsForQt5.callPackage ./pkgs/some-qt5-package { };
   # ...
 }
