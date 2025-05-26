@@ -47,17 +47,9 @@ rustPlatform.buildRustPackage {
   postPatch = ''
     # We disable the option to try to use the bleeding-edge version of mihomo
     # If you need a newer version, you can override the mihomo input of the wrapped package
-    sed -i -e '/Mihomo Alpha/d' ./src/components/setting/mods/clash-core-viewer.tsx
 
     substituteInPlace $cargoDepsCopy/libappindicator-sys-*/src/lib.rs \
       --replace-fail "libayatana-appindicator3.so.1" "${libayatana-appindicator}/lib/libayatana-appindicator3.so.1"
-
-    substituteInPlace $cargoDepsCopy/sysproxy-*/src/linux.rs \
-      --replace-fail '"gsettings"' '"${glib.bin}/bin/gsettings"' \
-      --replace-fail '"kreadconfig5"' '"${libsForQt5.kconfig}/bin/kreadconfig5"' \
-      --replace-fail '"kreadconfig6"' '"${kdePackages.kconfig}/bin/kreadconfig6"' \
-      --replace-fail '"kwriteconfig5"' '"${libsForQt5.kconfig}/bin/kwriteconfig5"' \
-      --replace-fail '"kwriteconfig6"' '"${kdePackages.kconfig}/bin/kwriteconfig6"'
 
     # this file tries to override the linker used when compiling for certain platforms
     rm .cargo/config.toml
@@ -67,15 +59,7 @@ rustPlatform.buildRustPackage {
       .bundle.createUpdaterArtifacts = false |
       del(.bundle.resources) |
       del(.bundle.externalBin)
-    ' src-tauri/tauri.conf.json | sponge src-tauri/tauri.conf.json
-
-    jq 'del(.bundle.externalBin)' src-tauri/tauri.linux.conf.json | sponge src-tauri/tauri.linux.conf.json
-
-    # As a side effect of patching the service to fix the arbitrary file overwrite issue,
-    # we also need to update the timestamp format in the filename to the second level.
-    # This ensures that the Clash kernel can still be restarted within one minute without problems.
-    substituteInPlace src-tauri/src/utils/dirs.rs \
-      --replace-fail '%Y-%m-%d-%H%M' '%Y-%m-%d-%H%M%S'
+    ' easytier-gui/src-tauri/tauri.conf.json | sponge easytier-gui/src-tauri/tauri.conf.json
   '';
 
   nativeBuildInputs = [
