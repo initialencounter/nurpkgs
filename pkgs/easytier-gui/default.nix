@@ -43,7 +43,7 @@ let
       EasyTier GUI based on tauri
       Setting NixOS option `programs.easytier-gui.enable = true` is recommended.
     '';
-    license = lib.licenses.gpl3Only;
+    license = lib.licenses.asl20;
     mainProgram = "easytier-gui";
     platforms = lib.platforms.linux;
   };
