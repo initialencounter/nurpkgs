@@ -16,6 +16,7 @@
   pkg-config,
   pnpm_9,
 
+  protobuf,
   glib,
   kdePackages,
   libayatana-appindicator,
@@ -74,6 +75,8 @@ rustPlatform.buildRustPackage {
     pkg-config
     pnpm_9.configHook
     llvmPackages.libclang
+    protobuf
+    rustPlatform.bindgenHook
   ];
 
   LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
