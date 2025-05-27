@@ -23,6 +23,7 @@
   libsoup,
   openssl,
   webkitgtk_4_1,
+  llvmPackages,
 }:
 
 rustPlatform.buildRustPackage {
@@ -72,7 +73,10 @@ rustPlatform.buildRustPackage {
     nodejs
     pkg-config
     pnpm_9.configHook
+    llvmPackages.libclang
   ];
+
+  LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
 
   buildInputs = [
     libayatana-appindicator
