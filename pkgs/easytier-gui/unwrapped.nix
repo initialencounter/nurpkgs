@@ -8,23 +8,18 @@
   vendor-hash,
 
   rustPlatform,
-
   cargo-tauri,
-  jq,
-  moreutils,
   nodejs,
   pkg-config,
   pnpm_9,
 
   protobuf,
   glib,
-  kdePackages,
+  llvmPackages,
   libayatana-appindicator,
-  libsForQt5,
-  libsoup,
+  libsoup_2_4,
   openssl,
   webkitgtk_4_1,
-  llvmPackages,
 }:
 
 rustPlatform.buildRustPackage {
@@ -47,30 +42,19 @@ rustPlatform.buildRustPackage {
   };
 
   postPatch = ''
-    # We disable the option to try to use the bleeding-edge version of mihomo
-    # If you need a newer version, you can override the mihomo input of the wrapped package
-
     substituteInPlace $cargoDepsCopy/libappindicator-sys-*/src/lib.rs \
       --replace-fail "libayatana-appindicator3.so.1" "${libayatana-appindicator}/lib/libayatana-appindicator3.so.1"
 
+    # Update the build command of Tauri in pnpm workspace to recursively build
     substituteInPlace easytier-gui/src-tauri/tauri.conf.json \
       --replace-fail "pnpm build" "pnpm -r build"
 
     # this file tries to override the linker used when compiling for certain platforms
     rm .cargo/config.toml
-
-    # disable updater and don't try to bundle helper binaries
-    jq '
-      .bundle.createUpdaterArtifacts = false |
-      del(.bundle.resources) |
-      del(.bundle.externalBin)
-    ' easytier-gui/src-tauri/tauri.conf.json | sponge easytier-gui/src-tauri/tauri.conf.json
   '';
 
   nativeBuildInputs = [
     cargo-tauri.hook
-    jq
-    moreutils
     nodejs
     pkg-config
     pnpm_9.configHook
@@ -81,16 +65,12 @@ rustPlatform.buildRustPackage {
 
   LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
 
+  doCheck = false; # tests failed due to heavy rely on network
+
   buildInputs = [
     libayatana-appindicator
-    libsoup
+    libsoup_2_4
     openssl
     webkitgtk_4_1
   ];
-
-  # make sure the .desktop file name does not contain whitespace,
-  # so that the service can register it as an auto-start item
-  postInstall = ''
-    mv $out/share/applications/easytier-gui.desktop $out/share/applications/easytier-gui.desktop
-  '';
 }
