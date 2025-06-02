@@ -39,7 +39,7 @@
     '';
     license = lib.licenses.asl20;
     mainProgram = "easytier-gui";
-    platforms = with lib.platforms; unix ++ windows;
+    platforms = lib.platforms.linux;
     maintainers = with lib.maintainers; [initialencounter];
   };
 in
