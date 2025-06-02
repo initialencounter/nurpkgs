@@ -52,13 +52,6 @@ in
       wrapGAppsHook3
     ];
 
-    # Fix libayatana-appindicator unable to get session bus, but this will slow down the startup time by about 20s.
-    # preFixup = ''
-    #   gappsWrapperArgs+=(
-    #     # --set DBUS_SESSION_BUS_ADDRESS "unix:path=/run/user/$(id -u)/bus"
-    #   )
-    # '';
-
     installPhase = ''
       runHook preInstall
 
