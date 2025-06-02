@@ -6,17 +6,17 @@
   wrapGAppsHook3,
 }: let
   pname = "easytier-gui";
-  version = "2.2.3";
+  version = "2.2.4";
 
   src = fetchFromGitHub {
     owner = "EasyTier";
     repo = "EasyTier";
     tag = "v${version}";
-    hash = "sha256-y2MGxCWL6mDlFDyDjhZOFo7djN09EZgTJsjXL+E7p/s=";
+    hash = "sha256-YrWuNHpNDs1VVz6Sahi2ViPT4kcJf10UUMRWEs4Y0xc=";
   };
 
   pnpm-hash = "sha256-l+uFiM1sW3n4aLHf9lj8G5wNYJlZMG8o8x//H9C64So=";
-  vendor-hash = "sha256-1s6I25shJZQXO+rjxffl+Eab237ktQCdXlaFKMPkq0M=";
+  vendor-hash = "sha256-uUmF4uIhSx+byG+c4hlUuuy+O87Saw8wRJ5OGk3zaPA=";
 
   unwrapped = callPackage ./unwrapped.nix {
     inherit
