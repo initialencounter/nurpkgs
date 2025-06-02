@@ -3,16 +3,13 @@
   version,
   src,
   meta,
-
   pnpm-hash,
   vendor-hash,
-
   rustPlatform,
   cargo-tauri,
   nodejs,
   pkg-config,
   pnpm_9,
-
   protobuf,
   glib,
   llvmPackages,
@@ -21,7 +18,6 @@
   openssl,
   webkitgtk_4_1,
 }:
-
 rustPlatform.buildRustPackage {
   inherit version src meta;
   pname = "${pname}-unwrapped";

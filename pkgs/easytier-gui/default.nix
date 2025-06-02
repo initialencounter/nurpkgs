@@ -31,13 +31,16 @@
   meta = {
     description = "EasyTier GUI based on tauri";
     homepage = "https://github.com/EasyTier/EasyTier";
+    changelog = "https://github.com/EasyTier/EasyTier/releases/tag/v${version}";
     longDescription = ''
-      EasyTier GUI based on tauri
-      Setting NixOS option `programs.easytier-gui.enable = true` is recommended.
+      EasyTier GUI based on tauri.
+      EasyTier is a simple, safe and decentralized VPN networking solution implemented
+      with the Rust language and Tokio framework.
     '';
     license = lib.licenses.asl20;
     mainProgram = "easytier-gui";
-    platforms = lib.platforms.linux;
+    platforms = with lib.platforms; unix ++ windows;
+    maintainers = with lib.maintainers; [initialencounter];
   };
 in
   stdenv.mkDerivation {
